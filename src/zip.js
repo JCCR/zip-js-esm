@@ -152,7 +152,7 @@ function Data64URIReader(dataURI) {
 		var i, data = getDataHelper(length);
 		var start = Math.floor(index / 3) * 4;
 		var end = Math.ceil((index + length) / 3) * 4;
-		var bytes = obj.atob(dataURI.substring(start + dataStart, end + dataStart));
+		var bytes = self.atob(dataURI.substring(start + dataStart, end + dataStart));
 		var delta = index - Math.floor(start / 4) * 3;
 		for (i = delta; i < delta + length; i++)
 			data.array[i - delta] = bytes.charCodeAt(i);
@@ -251,14 +251,14 @@ function Data64URIWriter(contentType) {
 		for (; i < array.length; i++)
 			pending += String.fromCharCode(array[i]);
 		if (dataString.length > 2)
-			data += obj.btoa(dataString);
+			data += self.btoa(dataString);
 		else
 			pending = dataString;
 		callback();
 	}
 
 	function getData(callback) {
-		callback(data + obj.btoa(pending));
+		callback(data + self.btoa(pending));
 	}
 
 	that.init = init;
@@ -451,7 +451,7 @@ function launchProcess(process, reader, writer, offset, size, crcType, onprogres
 
 function inflate(worker, sn, reader, writer, offset, size, computeCrc32, onend, onprogress, onreaderror, onwriteerror) {
 	var crcType = computeCrc32 ? 'output' : 'none';
-	if (obj.zip.useWebWorkers) {
+	if (Zip.useWebWorkers) {
 		var initialMessage = {
 			sn: sn,
 			codecClass: 'Inflater',
@@ -464,7 +464,7 @@ function inflate(worker, sn, reader, writer, offset, size, computeCrc32, onend, 
 
 function deflate(worker, sn, reader, writer, level, onend, onprogress, onreaderror, onwriteerror) {
 	var crcType = 'input';
-	if (obj.zip.useWebWorkers) {
+	if (Zip.useWebWorkers) {
 		var initialMessage = {
 			sn: sn,
 			options: {level: level},
@@ -478,7 +478,7 @@ function deflate(worker, sn, reader, writer, level, onend, onprogress, onreaderr
 
 function copy(worker, sn, reader, writer, offset, size, computeCrc32, onend, onprogress, onreaderror, onwriteerror) {
 	var crcType = 'input';
-	if (obj.zip.useWebWorkers && computeCrc32) {
+	if (Zip.useWebWorkers && computeCrc32) {
 		var initialMessage = {
 			sn: sn,
 			codecClass: 'NOOP',
@@ -690,7 +690,7 @@ function createZipReader(reader, callback, onerror) {
 		_worker: null
 	};
 
-	if (!obj.zip.useWebWorkers)
+	if (!Zip.useWebWorkers)
 		callback(zipReader);
 	else {
 		createWorker('inflater',
@@ -846,7 +846,7 @@ function createZipWriter(writer, callback, onerror, dontDeflate) {
 		_worker: null
 	};
 
-	if (!obj.zip.useWebWorkers)
+	if (!Zip.useWebWorkers)
 		callback(zipWriter);
 	else {
 		createWorker('deflater',
@@ -874,13 +874,13 @@ var DEFAULT_WORKER_SCRIPTS = {
 	inflater: ['z-worker.js', 'inflate.js']
 };
 function createWorker(type, callback, onerror) {
-	if (obj.zip.workerScripts !== null && obj.zip.workerScriptsPath !== null) {
+	if (Zip.workerScripts !== null && Zip.workerScriptsPath !== null) {
 		onerror(new Error('Either zip.workerScripts or zip.workerScriptsPath may be set, not both.'));
 		return;
 	}
 	var scripts;
-	if (obj.zip.workerScripts) {
-		scripts = obj.zip.workerScripts[type];
+	if (Zip.workerScripts) {
+		scripts = Zip.workerScripts[type];
 		if (!Array.isArray(scripts)) {
 			onerror(new Error('zip.workerScripts.' + type + ' is not an array!'));
 			return;
@@ -888,7 +888,7 @@ function createWorker(type, callback, onerror) {
 		scripts = resolveURLs(scripts);
 	} else {
 		scripts = DEFAULT_WORKER_SCRIPTS[type].slice(0);
-		scripts[0] = (obj.zip.workerScriptsPath || '') + scripts[0];
+		scripts[0] = (Zip.workerScriptsPath || '') + scripts[0];
 	}
 	var worker = new Worker(scripts[0]);
 	// record total consumed time by inflater/deflater/crc32 in this worker
@@ -919,8 +919,7 @@ function createWorker(type, callback, onerror) {
 function onerror_default(error) {
 	console.error(error);
 }
-
-export default {
+const Zip = {
     Reader: Reader,
     Writer: Writer,
     BlobReader: BlobReader,
@@ -963,3 +962,4 @@ export default {
      */
     workerScripts: null,
 };
+export default Zip;
