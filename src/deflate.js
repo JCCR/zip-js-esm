@@ -33,8 +33,6 @@
  * and contributors of zlib.
  */
 
-import zip from './zip';
-
 // Global
 
 var MAX_BITS = 15;
@@ -2054,4 +2052,4 @@ export function Deflater(options) {
 }
 
 // 'zip' may not be defined in z-worker and some tests
-self._jzlib_Deflater = Deflater;
+self._zipjs_Deflater = Deflater;

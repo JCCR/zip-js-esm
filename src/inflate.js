@@ -2147,4 +2147,4 @@ export function Inflater() {
 }
 
 // 'zip' may not be defined in z-worker and some tests
-self._jzlib_Inflater = Inflater;
+self._zipjs_Inflater = Inflater;

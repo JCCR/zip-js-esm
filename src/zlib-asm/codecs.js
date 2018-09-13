@@ -43,7 +43,7 @@
 	Inflater.prototype = Object.create(Codec.prototype);
 
 	// 'zip' may not be defined in z-worker and some tests
-	var env = global.zip || global;
-	env.Deflater = env._zlib_asm_Deflater = Deflater;
-	env.Inflater = env._zlib_asm_Inflater = Inflater;
+
+	global._zipjs_Deflater = Deflater;
+	global._zipjs_Inflater = Inflater;
 })(this);

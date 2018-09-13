@@ -454,7 +454,7 @@ function inflate(worker, sn, reader, writer, offset, size, computeCrc32, onend, 
 	if (Zip.useWebWorkers) {
 		var initialMessage = {
 			sn: sn,
-			codecClass: 'Inflater',
+			codecClass: '_zipjs_Inflater',
 			crcType: crcType,
 		};
 		launchWorkerProcess(worker, initialMessage, reader, writer, offset, size, onprogress, onend, onreaderror, onwriteerror);
@@ -468,7 +468,7 @@ function deflate(worker, sn, reader, writer, level, onend, onprogress, onreaderr
 		var initialMessage = {
 			sn: sn,
 			options: {level: level},
-			codecClass: 'Deflater',
+			codecClass: '_zipjs_Deflater',
 			crcType: crcType,
 		};
 		launchWorkerProcess(worker, initialMessage, reader, writer, 0, reader.size, onprogress, onend, onreaderror, onwriteerror);
@@ -481,7 +481,7 @@ function copy(worker, sn, reader, writer, offset, size, computeCrc32, onend, onp
 	if (Zip.useWebWorkers && computeCrc32) {
 		var initialMessage = {
 			sn: sn,
-			codecClass: 'NOOP',
+			codecClass: '_zipjs_NOOP',
 			crcType: crcType,
 		};
 		launchWorkerProcess(worker, initialMessage, reader, writer, offset, size, onprogress, onend, onreaderror, onwriteerror);

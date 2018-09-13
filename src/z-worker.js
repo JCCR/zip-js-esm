@@ -145,7 +145,7 @@
 
 	// "no-op" codec
 	function NOOP() {}
-	global.NOOP = NOOP;
+	global._zipjs_NOOP = NOOP;
 	NOOP.prototype.append = function append(bytes, onprogress) {
 		return bytes;
 	};
